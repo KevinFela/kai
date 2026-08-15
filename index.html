@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>earthnic · Home</title>
+  <link rel="icon" href="logo.jpeg" type="image/jpeg" />
+  <style>
+    /* ==========================================
+       1. CORE DESIGN VARIABLES & RESET
+       ========================================== */
+    :root {
+      --bg-dark: #1a3b2b;
+      --bg-light: #ffffff;
+      --text-dark: #121212;
+      --text-light: #ffffff;
+      --text-muted: #666666;
+      --accent-gray: #f4f4f4;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      --header-height: 60px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .menu-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background-color: var(--text-light);
+    }
+
+    .est-tag {
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      font-weight: 300;
+      opacity: 0.8;
+    }
+
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: lowercase;
+      border-bottom: 2px solid var(--text-light);
+      padding-bottom: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-icon {
+      width: 22px;
+      height: 22px;
+      stroke: var(--text-light);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #e74c3c;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .nav-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(26, 59, 43, 0.96);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 2.6rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .nav-links {
+      list-style: none;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 500;
+      transition: opacity 0.2s;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.7;
+      border-bottom-color: rgba(255,255,255,0.3);
+    }
+
+    .hero-slider {
+      margin-top: var(--header-height);
+      position: relative;
+      width: 100%;
+      height: 70vh;
+      overflow: hidden;
+      background-color: #1a3b2b;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1.2s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    .hero-badge {
+      background-color: rgba(255, 255, 255, 0.88);
+      padding: 30px 40px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+      max-width: 320px;
+    }
+
+    .hero-badge h2 {
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #1a3b2b;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .btn-outline {
+      display: inline-block;
+      padding: 10px 30px;
+      border: 1px solid #1a3b2b;
+      background: #1a3b2b;
+      color: white;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: 0.2s;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+    .btn-outline:hover {
+      background: transparent;
+      color: #1a3b2b;
+      border-color: #1a3b2b;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      background-color: transparent;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .dot.active {
+      background-color: #1a3b2b;
+      border-color: #1a3b2b;
+      transform: scale(1.15);
+    }
+
+    .brand-story {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 280px;
+      background-color: #e5e3de;
+    }
+
+    .story-card {
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #333333;
+    }
+
+    .story-card.bg-image {
+      background: url('2.jpeg') center/cover no-repeat;
+      min-height: 200px;
+    }
+
+    .features-section {
+      padding: 40px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      background: #fafafa;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 280px;
+    }
+
+    .feature-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      border: 1px solid #1a3b2b;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .feature-circle svg {
+      width: 44px;
+      height: 44px;
+      fill: none;
+      stroke: #1a3b2b;
+      stroke-width: 1.5;
+    }
+
+    .feature-title {
+      font-size: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      color: #1a3b2b;
+    }
+
+    .feature-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .cart-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 3000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .cart-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-sidebar {
+      position: fixed;
+      top: 0;
+      right: -420px;
+      width: 400px;
+      max-width: 90vw;
+      height: 100%;
+      background: #ffffff;
+      z-index: 3001;
+      padding: 20px;
+      transition: right 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+    }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 16px;
+    }
+
+    .cart-header h2 {
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+      color: #1a3b2b;
+    }
+
+    .cart-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #333;
+      line-height: 1;
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-image {
+      width: 55px;
+      height: 55px;
+      background: #eee;
+      background-size: cover;
+      background-position: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a3b2b;
+    }
+
+    .cart-item-price {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .cart-item-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .cart-item-controls button {
+      background: #f0f0f0;
+      border: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cart-item-controls button:hover {
+      background: #ddd;
+    }
+
+    .cart-item-controls .qty {
+      font-weight: 600;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    .cart-item-remove {
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0 4px;
+      transition: 0.2s;
+    }
+
+    .cart-item-remove:hover {
+      color: #e74c3c;
+    }
+
+    .cart-footer {
+      border-top: 1px solid #eee;
+      padding-top: 16px;
+      margin-top: 12px;
+    }
+
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1a3b2b;
+    }
+
+    .cart-checkout {
+      width: 100%;
+      padding: 12px;
+      background: #1a3b2b;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .cart-checkout:hover {
+      background: #2a5a3f;
+    }
+
+    .empty-cart {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 40px 0;
+    }
+
+    .footer {
+      background: #1a3b2b;
+      color: rgba(255,255,255,0.8);
+      padding: 30px 20px 20px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px 24px;
+      margin-bottom: 16px;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.7);
+      transition: 0.2s;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-links a:hover {
+      color: #ffffff;
+    }
+
+    .footer small {
+      opacity: 0.6;
+      font-size: 0.75rem;
+    }
+
+    .footer .credit {
+      display: block;
+      margin-top: 8px;
+      opacity: 0.5;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+
+    @media (min-width: 768px) {
+      .features-section {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .brand-story {
+        grid-template-columns: 1fr;
+      }
+      .story-card.bg-image {
+        min-height: 180px;
+      }
+      .hero-slider {
+        height: 55vh;
+      }
+      .cart-sidebar {
+        width: 100%;
+        max-width: 100%;
+        right: -110%;
+      }
+      .hero-badge {
+        padding: 20px 25px;
+      }
+      .hero-badge h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-left">
+      <button class="menu-btn" id="openMenu" aria-label="Open Navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <span class="est-tag">Est 2026</span>
+    </div>
+    <div class="logo">earthnic</div>
+    <div class="header-right">
+      <div class="cart-icon-wrapper" id="cartToggle">
+        <svg class="cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-modal" id="navModal">
+    <button class="close-btn" id="closeMenu" aria-label="Close Navigation">&times;</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalog.html">Catalog</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+      <li><a href="story.html">Our Story</a></li>
+    </ul>
+  </div>
+
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h2>Your Cart</h2>
+      <button class="cart-close" id="cartClose">&times;</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="empty-cart">Your cart is empty.</div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cartTotal">R0</span>
+      </div>
+      <button class="cart-checkout" id="checkoutBtn">Checkout via WhatsApp</button>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero-slider" id="heroSlider">
+      <div class="carousel-dots" id="dotsContainer"></div>
+    </section>
+
+    <section class="brand-story" id="story">
+      <div class="story-card bg-image"></div>
+      <div class="story-card">
+        <p>Our pieces feel timeless rather than trendy.</p>
+        <br />
+        <p>We navigate trend cycles while maintaining our core identity of conscious craft.</p>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="feature-item">
+        <div class="feature-circle">
+          <svg viewBox="0 0 24 24">
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
+        <h3 class="feature-title">Free Delivery</h3>
+        <p class="feature-desc">for purchases over R1,450!</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-circle">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <h3 class="feature-title">Discounts for Feedback</h3>
+        <p class="feature-desc"></p>
+      </div>
+    </section>
+
+    <section id="contact" style="padding: 30px 20px; text-align: center; background: #f5f5f5;">
+      <h3 style="color: #1a3b2b; letter-spacing: 2px;">Contact Us</h3>
+      <p style="color: var(--text-muted); margin-top: 8px;">kai@earthnic.com · +27 69 853 0542</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="catalog.html">Catalog</a>
+      <a href="contact.html">Contact</a>
+      <a href="story.html">Story</a>
+    </div>
+    <small>&copy; 2026 earthnic · Timeless Apparel</small>
+    <span class="credit">Developed by FactorX.co.za</span>
+  </footer>
+
+  <script>
+    (function() {
+      let cart = [];
+      const CART_KEY = 'earthnic_cart';
+
+      function loadCart() {
+        try {
+          const data = localStorage.getItem(CART_KEY);
+          if (data) cart = JSON.parse(data);
+        } catch (_) { cart = []; }
+        cart = cart.filter(item => item && typeof item === 'object' && item.id);
+        saveCart();
+      }
+
+      function saveCart() {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        renderCart();
+        updateBadge();
+      }
+
+      function updateBadge() {
+        const badge = document.getElementById('cartBadge');
+        const total = cart.reduce((sum, item) => sum + item.qty, 0);
+        badge.textContent = total;
+        badge.style.display = total > 0 ? 'flex' : 'none';
+      }
+
+      function findItem(productId) {
+        return cart.find(item => item.id === productId);
+      }
+
+      function addToCart(product) {
+        const existing = findItem(product.id);
+        if (existing) {
+          existing.qty += 1;
+        } else {
+          cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            qty: 1
+          });
+        }
+        saveCart();
+        const btn = document.querySelector(`[data-product-id="${product.id}"]`);
+        if (btn) {
+          const orig = btn.textContent;
+          btn.textContent = 'Added';
+          setTimeout(() => { btn.textContent = orig; }, 1200);
+        }
+      }
+
+      function removeItem(productId) {
+        cart = cart.filter(item => item.id !== productId);
+        saveCart();
+      }
+
+      function updateQty(productId, delta) {
+        const item = findItem(productId);
+        if (!item) return;
+        item.qty += delta;
+        if (item.qty <= 0) {
+          removeItem(productId);
+        } else {
+          saveCart();
+        }
+      }
+
+      function getTotal() {
+        return cart.reduce((sum, item) => sum + parseFloat(item.price) * item.qty, 0);
+      }
+
+      function renderCart() {
+        const container = document.getElementById('cartItems');
+        const totalEl = document.getElementById('cartTotal');
+        if (cart.length === 0) {
+          container.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
+          totalEl.textContent = 'R0';
+          return;
+        }
+        let html = '';
+        cart.forEach(item => {
+          const priceNum = parseFloat(item.price);
+          html += `
+            <div class="cart-item">
+              <div class="cart-item-image" style="background-image: url('${item.image}');"></div>
+              <div class="cart-item-info">
+                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-price">R${priceNum.toFixed(2)}</div>
+                <div class="cart-item-controls">
+                  <button onclick="window.cartModule.updateQty('${item.id}', -1)">−</button>
+                  <span class="qty">${item.qty}</span>
+                  <button onclick="window.cartModule.updateQty('${item.id}', 1)">+</button>
+                  <button class="cart-item-remove" onclick="window.cartModule.removeItem('${item.id}')">✕</button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+        totalEl.textContent = `R${getTotal().toFixed(2)}`;
+      }
+
+      const cartModule = { addToCart, removeItem, updateQty };
+      window.cartModule = cartModule;
+
+      const slider = document.getElementById('heroSlider');
+      const dotsContainer = document.getElementById('dotsContainer');
+      
+      const imageNames = [];
+      for (let i = 1; i <= 10; i++) {
+        imageNames.push(`${i}.jpeg`);
+      }
+
+      let currentIndex = 0;
+      let slideInterval;
+
+      imageNames.forEach((img, index) => {
+        const slide = document.createElement('div');
+        slide.className = `slide ${index === 0 ? 'active' : ''}`;
+        slide.style.backgroundImage = `url('${img}')`;
+        slide.innerHTML = `
+          <div class="hero-badge">
+            <h2>earthnic<br>by khaya</h2>
+            <a href="catalog.html" class="btn-outline">Shop Now</a>
+          </div>
+        `;
+        slider.appendChild(slide);
+      });
+
+      imageNames.forEach((_, index) => {
+        const dot = document.createElement('span');
+        dot.className = `dot ${index === 0 ? 'active' : ''}`;
+        dot.dataset.index = index;
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
+      });
+
+      const slides = slider.querySelectorAll('.slide');
+      const dots = dotsContainer.querySelectorAll('.dot');
+
+      function goToSlide(index) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        currentIndex = index;
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+      }
+
+      function nextSlide() {
+        const next = (currentIndex + 1) % slides.length;
+        goToSlide(next);
+      }
+
+      function startSlider() {
+        if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 4000);
+      }
+
+      function stopSlider() {
+        if (slideInterval) {
+          clearInterval(slideInterval);
+          slideInterval = null;
+        }
+      }
+
+      slider.addEventListener('mouseenter', stopSlider);
+      slider.addEventListener('mouseleave', startSlider);
+      startSlider();
+
+      const openMenuBtn = document.getElementById('openMenu');
+      const closeMenuBtn = document.getElementById('closeMenu');
+      const navModal = document.getElementById('navModal');
+      const navLinks = document.querySelectorAll('.nav-links a');
+
+      openMenuBtn.addEventListener('click', () => {
+        navModal.classList.add('active');
+        stopSlider();
+      });
+
+      closeMenuBtn.addEventListener('click', () => {
+        navModal.classList.remove('active');
+        startSlider();
+      });
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          navModal.classList.remove('active');
+          startSlider();
+        });
+      });
+
+      const cartToggle = document.getElementById('cartToggle');
+      const cartSidebar = document.getElementById('cartSidebar');
+      const cartOverlay = document.getElementById('cartOverlay');
+      const cartClose = document.getElementById('cartClose');
+
+      function openCart() {
+        cartSidebar.classList.add('open');
+        cartOverlay.classList.add('active');
+        renderCart();
+      }
+
+      function closeCart() {
+        cartSidebar.classList.remove('open');
+        cartOverlay.classList.remove('active');
+      }
+
+      cartToggle.addEventListener('click', openCart);
+      cartClose.addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+
+      document.getElementById('checkoutBtn').addEventListener('click', function() {
+        if (cart.length === 0) {
+          alert('Your cart is empty!');
+          return;
+        }
+        let message = 'Earthnic Order%0A%0A';
+        cart.forEach(item => {
+          const total = (parseFloat(item.price) * item.qty).toFixed(2);
+          message += `${item.name} x ${item.qty} = R${total}%0A`;
+        });
+        const grandTotal = getTotal().toFixed(2);
+        message += `%0ATotal: R${grandTotal}%0A%0AThank you!`;
+        const url = `https://wa.me/27698530542?text=${message}`;
+        window.open(url, '_blank');
+      });
+
+      loadCart();
+      renderCart();
+      updateBadge();
+    })();
+  </script>
+</body>
+</html>
