@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>earthnic · Home</title>
   <link rel="icon" href="logo.jpeg" type="image/jpeg" />
   <style>
@@ -26,12 +26,14 @@
       padding: 0;
     }
 
-    body {
+    html, body {
+      height: 100%;
       font-family: var(--font-family);
       background-color: var(--bg-light);
       color: var(--text-dark);
       line-height: 1.5;
-      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     a {
@@ -39,6 +41,9 @@
       text-decoration: none;
     }
 
+    /* ==========================================
+       2. HEADER
+       ========================================== */
     .header {
       position: fixed;
       top: 0;
@@ -69,6 +74,7 @@
       display: flex;
       flex-direction: column;
       gap: 4px;
+      padding: 4px;
     }
 
     .menu-btn span {
@@ -76,6 +82,7 @@
       width: 20px;
       height: 2px;
       background-color: var(--text-light);
+      transition: 0.2s;
     }
 
     .est-tag {
@@ -104,6 +111,7 @@
     .cart-icon-wrapper {
       position: relative;
       cursor: pointer;
+      padding: 4px;
     }
 
     .cart-icon {
@@ -129,6 +137,9 @@
       pointer-events: none;
     }
 
+    /* ==========================================
+       3. NAV MODAL
+       ========================================== */
     .nav-modal {
       position: fixed;
       top: 0;
@@ -162,6 +173,7 @@
       font-size: 2.6rem;
       cursor: pointer;
       line-height: 1;
+      padding: 10px;
     }
 
     .nav-links {
@@ -187,6 +199,9 @@
       border-bottom-color: rgba(255,255,255,0.3);
     }
 
+    /* ==========================================
+       4. HERO SLIDER
+       ========================================== */
     .hero-slider {
       margin-top: var(--header-height);
       position: relative;
@@ -194,6 +209,7 @@
       height: 70vh;
       overflow: hidden;
       background-color: #1a3b2b;
+      min-height: 400px;
     }
 
     .slide {
@@ -205,54 +221,18 @@
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transition: opacity 1.2s ease-in-out;
+      transition: opacity 1s ease-in-out;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: 40px 20px;
       text-align: center;
+      will-change: opacity;
     }
 
     .slide.active {
       opacity: 1;
-    }
-
-    .hero-badge {
-      background-color: rgba(255, 255, 255, 0.88);
-      padding: 30px 40px;
-      border-radius: 4px;
-      backdrop-filter: blur(4px);
-      max-width: 320px;
-    }
-
-    .hero-badge h2 {
-      font-size: 1.6rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #1a3b2b;
-      margin-bottom: 12px;
-      font-weight: 700;
-    }
-
-    .btn-outline {
-      display: inline-block;
-      padding: 10px 30px;
-      border: 1px solid #1a3b2b;
-      background: #1a3b2b;
-      color: white;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      cursor: pointer;
-      transition: 0.2s;
-      border-radius: 30px;
-      font-weight: 500;
-    }
-    .btn-outline:hover {
-      background: transparent;
-      color: #1a3b2b;
-      border-color: #1a3b2b;
     }
 
     .carousel-dots {
@@ -273,6 +253,7 @@
       background-color: transparent;
       cursor: pointer;
       transition: 0.3s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .dot.active {
@@ -281,6 +262,113 @@
       transform: scale(1.15);
     }
 
+    /* ==========================================
+       5. POPUP OVERLAY
+       ========================================== */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .popup-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .popup-content {
+      background: #ffffff;
+      padding: 50px 40px 40px;
+      border-radius: 12px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .popup-overlay.active .popup-content {
+      transform: scale(1);
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #999;
+      line-height: 1;
+      padding: 5px 10px;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .popup-close:hover {
+      color: #333;
+    }
+
+    .popup-content h2 {
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #1a3b2b;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .popup-content .sub {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+      font-weight: 300;
+    }
+
+    .popup-btn {
+      display: inline-block;
+      padding: 12px 40px;
+      background: #1a3b2b;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .popup-btn:hover {
+      background: #2a5a3f;
+      transform: translateY(-2px);
+    }
+
+    .popup-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* ==========================================
+       6. BRAND STORY
+       ========================================== */
     .brand-story {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -304,6 +392,9 @@
       min-height: 200px;
     }
 
+    /* ==========================================
+       7. FEATURES
+       ========================================== */
     .features-section {
       padding: 40px 20px 60px;
       display: flex;
@@ -331,6 +422,7 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
+      flex-shrink: 0;
     }
 
     .feature-circle svg {
@@ -354,6 +446,9 @@
       color: var(--text-muted);
     }
 
+    /* ==========================================
+       8. CART
+       ========================================== */
     .cart-overlay {
       position: fixed;
       top: 0;
@@ -399,6 +494,7 @@
       padding-bottom: 16px;
       border-bottom: 1px solid #eee;
       margin-bottom: 16px;
+      flex-shrink: 0;
     }
 
     .cart-header h2 {
@@ -414,12 +510,14 @@
       cursor: pointer;
       color: #333;
       line-height: 1;
+      padding: 5px 10px;
     }
 
     .cart-items {
       flex: 1;
       overflow-y: auto;
       padding-right: 4px;
+      -webkit-overflow-scrolling: touch;
     }
 
     .cart-item {
@@ -442,12 +540,14 @@
 
     .cart-item-info {
       flex: 1;
+      min-width: 0;
     }
 
     .cart-item-name {
       font-size: 0.9rem;
       font-weight: 600;
       color: #1a3b2b;
+      word-wrap: break-word;
     }
 
     .cart-item-price {
@@ -460,6 +560,7 @@
       align-items: center;
       gap: 8px;
       margin-top: 4px;
+      flex-wrap: wrap;
     }
 
     .cart-item-controls button {
@@ -475,6 +576,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .cart-item-controls button:hover {
@@ -495,6 +597,7 @@
       font-size: 1.1rem;
       padding: 0 4px;
       transition: 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .cart-item-remove:hover {
@@ -505,6 +608,7 @@
       border-top: 1px solid #eee;
       padding-top: 16px;
       margin-top: 12px;
+      flex-shrink: 0;
     }
 
     .cart-total {
@@ -528,10 +632,15 @@
       cursor: pointer;
       transition: 0.2s;
       letter-spacing: 0.5px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .cart-checkout:hover {
       background: #2a5a3f;
+    }
+
+    .cart-checkout:active {
+      transform: scale(0.98);
     }
 
     .empty-cart {
@@ -540,6 +649,9 @@
       padding: 40px 0;
     }
 
+    /* ==========================================
+       9. FOOTER
+       ========================================== */
     .footer {
       background: #1a3b2b;
       color: rgba(255,255,255,0.8);
@@ -580,6 +692,9 @@
       letter-spacing: 0.5px;
     }
 
+    /* ==========================================
+       10. RESPONSIVE
+       ========================================== */
     @media (min-width: 768px) {
       .features-section {
         flex-direction: row;
@@ -596,16 +711,41 @@
       }
       .hero-slider {
         height: 55vh;
+        min-height: 300px;
       }
       .cart-sidebar {
         width: 100%;
         max-width: 100%;
         right: -110%;
       }
-      .hero-badge {
-        padding: 20px 25px;
+      .popup-content {
+        padding: 40px 25px 30px;
+        width: 92%;
       }
-      .hero-badge h2 {
+      .popup-content h2 {
+        font-size: 1.4rem;
+      }
+      .popup-btn {
+        padding: 10px 30px;
+        font-size: 0.8rem;
+      }
+      .est-tag {
+        font-size: 0.7rem;
+      }
+      .logo {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .hero-slider {
+        height: 45vh;
+        min-height: 250px;
+      }
+      .popup-content {
+        padding: 30px 20px 25px;
+      }
+      .popup-content h2 {
         font-size: 1.2rem;
       }
     }
@@ -613,6 +753,9 @@
 </head>
 <body>
 
+  <!-- ==========================================
+       HEADER
+       ========================================== -->
   <header class="header">
     <div class="header-left">
       <button class="menu-btn" id="openMenu" aria-label="Open Navigation">
@@ -635,6 +778,9 @@
     </div>
   </header>
 
+  <!-- ==========================================
+       NAV MODAL
+       ========================================== -->
   <div class="nav-modal" id="navModal">
     <button class="close-btn" id="closeMenu" aria-label="Close Navigation">&times;</button>
     <ul class="nav-links">
@@ -645,6 +791,21 @@
     </ul>
   </div>
 
+  <!-- ==========================================
+       POPUP OVERLAY
+       ========================================== -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup-content">
+      <button class="popup-close" id="popupClose" aria-label="Close">&times;</button>
+      <h2>earthnic<br>by khaya</h2>
+      <p class="sub">Timeless Apparel</p>
+      <a href="catalog.html" class="popup-btn">Shop Now</a>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       CART
+       ========================================== -->
   <div class="cart-overlay" id="cartOverlay"></div>
   <div class="cart-sidebar" id="cartSidebar">
     <div class="cart-header">
@@ -663,6 +824,9 @@
     </div>
   </div>
 
+  <!-- ==========================================
+       MAIN
+       ========================================== -->
   <main>
     <section class="hero-slider" id="heroSlider">
       <div class="carousel-dots" id="dotsContainer"></div>
@@ -707,6 +871,9 @@
     </section>
   </main>
 
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
   <footer class="footer">
     <div class="footer-links">
       <a href="index.html">Home</a>
@@ -718,8 +885,14 @@
     <span class="credit">Developed by FactorX.co.za</span>
   </footer>
 
+  <!-- ==========================================
+       JAVASCRIPT
+       ========================================== -->
   <script>
     (function() {
+      // ========================================
+      // CART
+      // ========================================
       let cart = [];
       const CART_KEY = 'earthnic_cart';
 
@@ -825,6 +998,9 @@
       const cartModule = { addToCart, removeItem, updateQty };
       window.cartModule = cartModule;
 
+      // ========================================
+      // HERO SLIDER
+      // ========================================
       const slider = document.getElementById('heroSlider');
       const dotsContainer = document.getElementById('dotsContainer');
       
@@ -840,12 +1016,6 @@
         const slide = document.createElement('div');
         slide.className = `slide ${index === 0 ? 'active' : ''}`;
         slide.style.backgroundImage = `url('${img}')`;
-        slide.innerHTML = `
-          <div class="hero-badge">
-            <h2>earthnic<br>by khaya</h2>
-            <a href="catalog.html" class="btn-outline">Shop Now</a>
-          </div>
-        `;
         slider.appendChild(slide);
       });
 
@@ -889,6 +1059,41 @@
       slider.addEventListener('mouseleave', startSlider);
       startSlider();
 
+      // ========================================
+      // POPUP
+      // ========================================
+      const popupOverlay = document.getElementById('popupOverlay');
+      const popupClose = document.getElementById('popupClose');
+
+      function showPopup() {
+        popupOverlay.classList.add('active');
+      }
+
+      function hidePopup() {
+        popupOverlay.classList.remove('active');
+      }
+
+      // Show popup after 1 second
+      setTimeout(showPopup, 1000);
+
+      // Close popup on X click
+      popupClose.addEventListener('click', hidePopup);
+
+      // Close popup on overlay click (outside content)
+      popupOverlay.addEventListener('click', function(e) {
+        if (e.target === this) {
+          hidePopup();
+        }
+      });
+
+      // Close popup on Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && popupOverlay.classList.contains('active')) {
+          hidePopup();
+        }
+      });
+
+   
       const openMenuBtn = document.getElementById('openMenu');
       const closeMenuBtn = document.getElementById('closeMenu');
       const navModal = document.getElementById('navModal');
@@ -911,6 +1116,7 @@
         });
       });
 
+     
       const cartToggle = document.getElementById('cartToggle');
       const cartSidebar = document.getElementById('cartSidebar');
       const cartOverlay = document.getElementById('cartOverlay');
